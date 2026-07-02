@@ -28,6 +28,9 @@ const RegistCompetition = () => {
             setIsLoading(true);
             const res = await getPublicEvents("competition");
             if (res.success && res.data) {
+                const normalizedSlug = decodeURIComponent(
+                    competitionSlug || ""
+                ).toLowerCase();
                 const event = res.data.find(
                     (e) => e.id.toLowerCase() === competitionSlug?.toLowerCase()
                 );
@@ -104,7 +107,9 @@ const RegistCompetition = () => {
 
         const submissionData = {
             "competition_id": competitionId,
-            "team_name": NamaTim
+            ...(participationType === "team"
+                ? { "team_name": NamaTim.trim() }
+                : {}),
         };
 
         try {
@@ -125,7 +130,11 @@ const RegistCompetition = () => {
             
             // Show success message and redirect
             setAlertType("success");
-            setAlertMessage("Pendaftaran tim berhasil!");
+            setAlertMessage(
+                participationType === "individual"
+                    ? "Pendaftaran individu berhasil!"
+                    : "Pendaftaran tim berhasil!"
+            );
             setShowAlert(true);
             
             // Redirect after showing success message
@@ -190,7 +199,11 @@ const RegistCompetition = () => {
                                 disabled={isSubmitting || !competitionId || isLoading}
                                 className={`custom-button-bg text-white px-4 py-2 rounded cursor-pointer ${isSubmitting || !competitionId || isLoading ? 'opacity-75 cursor-not-allowed' : 'button-hover transition duration-300 ease-in-out hover:scale-105'}`}
                             >
-                                {isSubmitting ? 'Mendaftar...' : 'Submit'}
+                                {isSubmitting
+                                    ? "Mendaftar..."
+                                    : participationType === "individual"
+                                      ? "Daftar"
+                                      : "Submit"}
                             </button>
                         </div>
                     </form>

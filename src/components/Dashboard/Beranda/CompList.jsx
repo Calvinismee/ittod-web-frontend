@@ -91,6 +91,8 @@ const CompList = ({ name, currentUser, competitions = {}, onVerify, onEditUser})
     };
 
     const renderCompetition = (key, data) => {
+        const isIndividual = data.participationType === "individual";
+
         // Check dan pastikan members selalu dalam bentuk array untuk rendering
         const membersArray = Array.isArray(data.members)
             ? data.members
